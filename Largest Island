@@ -1,0 +1,45 @@
+class solution {
+    public: 
+    int largestIsland(int[][] grid) {
+        if (grid == NULL || grid.length() == 0) return 0; // no case and empty grid
+        int max = 0, islandId = 2, m = grid.length(), n = grid[0].length();
+        Map<int, int> map = new HashMap<>(); // map is mapping the islandId to the island size 
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    int size = getIslandSize(grid, i, j, islandId);
+                    max = Math.max(max, size);
+                    map.put(islandId++, size);
+                }
+            }
+        } // the for loop is going over whole grid and getting island size with the current position, 
+          //then replace current island and connected island with current islandID.
+          //After that, transfer islandId and island size to the map and increase islandId by 1.
+        for (int i = 0; i < m; i++) {
+            for (j = 0; j < n; j++) {
+                if (grid[i][j] == 0) {
+                    Set<int> set = new HashSet<>();
+                    for (int[] direction : dirctions) {
+                        int x = dirction[0] + i, y = dirction[1] + j;
+                        if (x > -1 && y > -1 && x < m && y < n && grid[x][y] != 0) {
+                            set.add(grid[x][y]);
+                        }
+                    }
+                }
+            }
+        } // the for loop is checking 0 one at a time. by checking four dirctions starting from current 0, combine all island together to get new island size.
+    }
+    private:
+    int getIslandSize(int[][] grid, int i, int j, int islandId) {
+        if (i < 0 || j < 0 || i >= grid.length() || j >= grid[0].length() || grid[i][j] != 1) return 0; // exit the recursive if out of bound
+        grid[i][j] = islandId;
+        int left = getIslandSize(grid, i, j - 1, islandId);
+        int right = getIslandSize(grid, i, j + 1, islandId);
+        int up = getIslandSize(grid, i - 1, j, islandId);
+        int down = getIslandSize(grid, i + 1, j, islandId);
+        return left + right + up + down + 1; 
+        // call the recursive function in four directions in order to get the size of island.
+
+    }
+    int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+}
